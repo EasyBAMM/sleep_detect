@@ -5,6 +5,7 @@ window.onload = function () {
   var warnDiv = document.querySelector(".warning");
   var rowDiv = document.querySelector(".row1");
   var obj = {};
+  var audioPlaying = 0;
   var sleepDetect = false;
   var sensorValue = [[0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0]];
   var audio = document.getElementsByTagName('audio')[0];
@@ -79,11 +80,14 @@ window.onload = function () {
           if (obj.sleep == true) {
             // sleeping
             warnDiv.classList.remove("deactive");
+            if(audioPlaying == 0){
               audio.play(); 
-            
+            }
+              audioPlaying++;
           } else {
             // not sleeping
             warnDiv.classList.add("deactive");
+            audioPlaying = 0;
             audio.pause();
           }
 
