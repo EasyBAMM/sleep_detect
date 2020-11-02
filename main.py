@@ -12,6 +12,7 @@ import imutils
 import dlib
 import cv2
 from flask import Flask, render_template, Response, jsonify
+from flask_cors import CORS, cross_origin
 import numpy as np
 import time
 import threading
@@ -211,7 +212,8 @@ def sleep_detect():
 
 # flask 웹서버
 app = Flask(__name__)
-
+CORS(app, resources={r'*':{'origins':'*'}})
+app.config['CORS_HEADERS'] = 'content-Type'
 
 # gen():
 # : outputFrame 에 저장된 값이 있다면 , 이 데이터를 웹이 읽을 수 있는 byte형식으로 인코딩한다.
@@ -290,6 +292,7 @@ except Exception:
     pass
 '''
 @app.route('/data')
+@cross_origin()
 def getSleepData():
     global humidity, temperature
 
@@ -301,6 +304,7 @@ def getSleepData():
     return jsonify(data)
 
 @app.route('/sleep')
+@cross_origin()
 def getSensorData():
     global is_sleep
 
