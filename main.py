@@ -58,16 +58,16 @@ ap.add_argument("-a", "--alarm", type=int, default=0,
 args = vars(ap.parse_args())
 
 # check to see if we are using GPIO/TrafficHat as an alarm
-if args["alarm"] > 0:
-    from gpiozero import TrafficHat
-    th = TrafficHat()
-    print("[INFO] using TrafficHat alarm...")
+# if args["alarm"] > 0:
+#     from gpiozero import TrafficHat
+#     th = TrafficHat()
+#     print("[INFO] using TrafficHat alarm...")
 
 # define two constants, one for the eye aspect ratio to indicate
 # blink and then a second constant for the number of consecutive
 # frames the eye must be below the threshold for to set off the
 # alarm
-EYE_AR_THRESH = 0.3
+EYE_AR_THRESH = 0.25
 EYE_AR_CONSEC_FRAMES = 16
 
 # initialize the frame counter as well as a boolean used to
@@ -124,6 +124,7 @@ def sleep_detect():
         # channels)
         frame = vs.read()
         frame = imutils.resize(frame, width=450)
+        frame = cv2.flip(frame, 1) # 1 to flip LR
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # detect faces in the grayscale frame
@@ -170,14 +171,14 @@ def sleep_detect():
                 # frames, then sound the alarm
                 if COUNTER >= EYE_AR_CONSEC_FRAMES:
                     # if the alarm is not on, turn it on
-                    if not ALARM_ON:
-                        ALARM_ON = True
+                    # if not ALARM_ON:
+                    #     ALARM_ON = True
 
-                        # check to see if the TrafficHat buzzer should
-                        # be sounded
-                        if args["alarm"] > 0 and active == True:
-                            th.buzzer.blink(0.1, 0.1, 10,
-                                            background=True)
+                    #     # check to see if the TrafficHat buzzer should
+                    #     # be sounded
+                    #     if args["alarm"] > 0 and active == True:
+                    #         th.buzzer.blink(0.1, 0.1, 10,
+                    #                         background=True)
 
                     # is_sleep on
                     is_sleep = True
@@ -189,7 +190,7 @@ def sleep_detect():
             # threshold, so reset the counter and alarm
             else:
                 COUNTER = 0
-                ALARM_ON = False
+                # ALARM_ON = False
                 is_sleep = False
 
             # draw the computed eye aspect ratio on the frame to help
@@ -214,6 +215,17 @@ def sleep_detect():
 app = Flask(__name__)
 CORS(app, resources={r'*':{'origins':'*'}})
 app.config['CORS_HEADERS'] = 'content-Type'
+
+# sample
+url_server = {
+                "sensor" : "http://192.168.35.66:5000/data",
+                "ledon" : "http://192.168.43.79:5000/led-on",
+                "ledoff" : "http://192.168.35.39:5000/led-off",
+                "sleepdetect" : "http://localhost:5000/sleep",
+                "sleepactive" : "http://localhost:5000/active",
+                "sleepvideo" : "http://localhost:5000/video_feed",
+            }
+
 
 # gen():
 # : outputFrame 에 저장된 값이 있다면 , 이 데이터를 웹이 읽을 수 있는 byte형식으로 인코딩한다.
@@ -264,7 +276,7 @@ def video_feed():
 @app.route('/')
 def index():
 
-    return render_template('index.html')
+    return render_template('index.html', url_server=url_server, enumerate=enumerate)
 # def index(): end
 
 # toggle active variable

@@ -74,6 +74,9 @@
     </div>
     <!-- container -->
 
+    {% for i, (k,v) in enumerate(url_server.items()) %}
+          <div id="url-{{k}}" style="display: none;">{{v}}</div>
+    {% endfor %}
     <!-- chart js-->
     <script src="../static/chart/dist/Chart.min.js"></script>
 </body>

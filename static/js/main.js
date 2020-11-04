@@ -6,10 +6,18 @@ window.onload = function () {
   var rowDiv = document.querySelector(".row1");
   var obj = {};
   var audioPlaying = 0;
+  var ledPlaying = 0;
+  var ledStoping = 0;
+  var audioControl = false;
+  var ledControl = false;
   var sleepDetect = false;
   var sensorValue = [[0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0]];
   var audio = document.getElementsByTagName('audio')[0];
   var sensorText = document.querySelector('.right-button');
+  var sensorUrl = document.querySelector('#url-sensor');
+  var ledOnUrl = document.querySelector('#url-ledon');
+  var ledOffUrl = document.querySelector('#url-ledoff');
+
 
   var ctx = document.getElementById('myChart').getContext('2d');
 
@@ -49,7 +57,7 @@ window.onload = function () {
 
     fetch("http://localhost:5000/active").then(function (response) {
       response.text().then(function (text) {
-        console.log(text);
+        // console.log(text);
       });
     });
   });
@@ -74,23 +82,56 @@ window.onload = function () {
       fetch("http://localhost:5000/sleep").then(function (response) {
         response.json().then(function (json) {
           obj = json;
-          console.log(obj);
+          // console.log(obj);
 
-          //   console.log(obj);
           if (obj.sleep == true) {
             // sleeping
             warnDiv.classList.remove("deactive");
+
+            // start audio
             if(audioPlaying == 0){
-              audio.play(); 
+              audio.play();
+              audioControl = true;   
             }
+
+            // Turn on led
+            if(ledPlaying == 0 && ledControl == false) {
+              ledStoping = 0;
+              fetch(ledOnUrl).then(function (response){
+                response.text().then(function(text){
+                  // console.log(text);
+                });
+              });
+              ledControl = true;
+            }
+            
+              ledPlaying++;
               audioPlaying++;
-          } else {
+          } 
+          else {
             // not sleeping
             warnDiv.classList.add("deactive");
-            audioPlaying = 0;
-            audio.pause();
-          }
 
+            // stop audio
+            if(audioControl == true){
+              audio.pause();
+              audioPlaying = 0;
+              audioControl = false;
+            }
+
+            // Turn off led
+            if(ledStoping > 10 && ledControl == true){ // driver wake up over 5 sec and led is on
+              ledPlaying = 0;
+              fetch(ledOffUrl).then(function (response){
+                response.text().then(function(text){
+                  // console.log(text);
+                });
+              });
+              ledControl = false;
+            }
+
+            ledStoping++;
+          }
         });
       });
     } 
@@ -101,11 +142,10 @@ window.onload = function () {
 
   function graph() {
     if (sleepDetect == true) {
-      
-      fetch("http://192.168.43.141:5000/data").then(function (response) {
+      // console.log(sensorUrl.innerHTML);
+      fetch(sensorUrl.innerHTML).then(function (response) {
         response.json().then(function (json) {
           obj = json;
-          console.log(obj);
           sensorValue[0] = obj.sensor1;
           sensorValue[1] = obj.sensor2;
           // console.log(obj);
