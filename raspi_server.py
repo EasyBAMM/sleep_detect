@@ -31,17 +31,43 @@ def getSensorData():
     return jsonify(data) 
 #def getSensorData(): end
 
-#@app.route('/led-on')
-#def ledOn():
-#
-#
-##def lefON(): end
-#
-#@app.route('/led-off')
-#def ledOff():
-#
-#    #def ledOff(): end
+'''
+import os
+import sys
+import subprocess
+import signal
+import psutil
+import getpass
 
+proc = None
+
+def kill(proc_pid):
+    process = psutil.Process(proc_pid)
+    for proc in process.children(recursive=True):
+        proc.kill()
+    process.kill()
+
+@app.route('/led-on')
+def ledOn():
+    global proc
+
+    print("led on")
+    proc = subprocess.Popen(["./demo --led-rows=16 --led-cols=32 --led-no-hardware-pulse -D 1 output-onlinepngtools-_1_.ppm --led-slowdown-gpio=4"], shell=True)
+
+    return "led-on ok"
+#def lefON(): end
+
+@app.route('/led-off')
+def ledOff():
+    global proc
+
+    kill(proc.pid)
+    print("led off")
+
+    return "led-off ok"
+   #def ledOff(): end
+
+'''
 def sensorRead():
     global humidity, temperature
 

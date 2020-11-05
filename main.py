@@ -218,9 +218,9 @@ app.config['CORS_HEADERS'] = 'content-Type'
 
 # sample
 url_server = {
-                "sensor" : "http://192.168.35.66:5000/data",
-                "ledon" : "http://192.168.43.79:5000/led-on",
-                "ledoff" : "http://192.168.35.39:5000/led-off",
+                "sensor" : "http://192.168.0.20:5000/data",
+                "ledon" : "http://192.168.0.20:5000/led-on",
+                "ledoff" : "http://192.168.0.20:5000/led-off",
                 "sleepdetect" : "http://localhost:5000/sleep",
                 "sleepactive" : "http://localhost:5000/active",
                 "sleepvideo" : "http://localhost:5000/video_feed",
@@ -302,7 +302,7 @@ try:
     humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
 except Exception:
     pass
-'''
+
 @app.route('/data')
 @cross_origin()
 def getSleepData():
@@ -314,6 +314,7 @@ def getSleepData():
         }
 
     return jsonify(data)
+'''
 
 @app.route('/sleep')
 @cross_origin()

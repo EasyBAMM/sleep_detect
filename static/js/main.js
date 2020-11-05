@@ -14,9 +14,9 @@ window.onload = function () {
   var sensorValue = [[0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0]];
   var audio = document.getElementsByTagName('audio')[0];
   var sensorText = document.querySelector('.right-button');
-  var sensorUrl = document.querySelector('#url-sensor');
-  var ledOnUrl = document.querySelector('#url-ledon');
-  var ledOffUrl = document.querySelector('#url-ledoff');
+  var sensorUrl = document.querySelector('#url-sensor').innerHTML;
+  var ledOnUrl = document.querySelector('#url-ledon').innerHTML;
+  var ledOffUrl = document.querySelector('#url-ledoff').innerHTML;
 
 
   var ctx = document.getElementById('myChart').getContext('2d');
@@ -143,7 +143,7 @@ window.onload = function () {
   function graph() {
     if (sleepDetect == true) {
       // console.log(sensorUrl.innerHTML);
-      fetch(sensorUrl.innerHTML).then(function (response) {
+      fetch(sensorUrl).then(function (response) {
         response.json().then(function (json) {
           obj = json;
           sensorValue[0] = obj.sensor1;
