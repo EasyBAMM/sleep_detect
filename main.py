@@ -67,7 +67,7 @@ args = vars(ap.parse_args())
 # blink and then a second constant for the number of consecutive
 # frames the eye must be below the threshold for to set off the
 # alarm
-EYE_AR_THRESH = 0.25
+EYE_AR_THRESH = 0.3
 EYE_AR_CONSEC_FRAMES = 16
 
 # initialize the frame counter as well as a boolean used to
@@ -218,9 +218,9 @@ app.config['CORS_HEADERS'] = 'content-Type'
 
 # sample
 url_server = {
-                "sensor" : "http://192.168.0.20:5000/data",
-                "ledon" : "http://192.168.0.20:5000/led-on",
-                "ledoff" : "http://192.168.0.20:5000/led-off",
+                "sensor" : "http://192.168.43.121:5000/data",
+                "ledon" : "http://192.168.43.121:5000/led-on",
+                "ledoff" : "http://192.168.43.121:5000/led-off",
                 "sleepdetect" : "http://localhost:5000/sleep",
                 "sleepactive" : "http://localhost:5000/active",
                 "sleepvideo" : "http://localhost:5000/video_feed",
